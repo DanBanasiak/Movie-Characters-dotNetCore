@@ -1,15 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using StarWars.Api.Configurations;
+using System.Reflection;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using StarWars.Application.Interfaces;
+using StarWars.Application.Data;
+using StarWars.Application.Queries;
+using StarWars.Application.Data.Repositories;
+using StarWars.Application.Commands.Characters.Create;
 
 namespace StarWars.Api
 {
@@ -22,13 +25,28 @@ namespace StarWars.Api
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = Configuration["ConnectionString"];
+
+            services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString));
+            services.AddScoped<ISqlConnectionFactory>(sql => new SqlConnectionFactory(connectionString));
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddMediatR(
+                typeof(GetCharactersQuery).Assembly, 
+                typeof(CreateCharacterCommand).Assembly);
+
+            services.AddScoped<ICharacterRepository, CharacterRepository>();
+            services.AddScoped<IEpisodeRepository, EpisodeRepository>();
+            services.AddScoped<IWeaponRepository, WeaponRepository>();
+            services.AddScoped<ICharacterEpisodeRepository, CharacterEpisodeRepository>();
+            services.AddScoped<ICharacterFriendRepository, CharacterFriendRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.AddControllers();
+            services.AddSwaggerDocumentation();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -36,16 +54,11 @@ namespace StarWars.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseSwaggerDocumentation();
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
 }
