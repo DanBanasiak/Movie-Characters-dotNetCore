@@ -6,9 +6,10 @@ namespace StarWars.Application.Commands.Characters.Create
     {
         public CreateCharacterCommandValidator()
         {
-            RuleFor(x => x.CreateCharacter.Name)
-                .NotEmpty()
-                .WithMessage("Name is empty");
+            //TODO
+            //RuleFor(x => x.CreateCharacter.Name)
+            //    .NotEmpty()
+            //    .WithMessage("Name is empty");
         }
     }
 }

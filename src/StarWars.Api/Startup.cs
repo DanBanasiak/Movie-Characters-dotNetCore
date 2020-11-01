@@ -27,7 +27,7 @@ namespace StarWars.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration["ConnectionString"];
+            var connectionString = Configuration["ConnectionStrings:DefaultConnection"];
 
             services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString));
             services.AddScoped<ISqlConnectionFactory>(sql => new SqlConnectionFactory(connectionString));

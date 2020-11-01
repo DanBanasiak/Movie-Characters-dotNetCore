@@ -7,12 +7,13 @@ namespace StarWars.Application.Commands.CharacterFriends.Create
     {
         public CreateCharacterFriendCommandValidator()
         {
-            RuleFor(x => x.CreateCharacterFriend.CharacterId)
-                .NotEmpty()
-                .WithMessage("CharacterId is empty");
-            RuleFor(x => x.CreateCharacterFriend.FriendId)
-                .NotEmpty()
-                .WithMessage("FriendId is empty");
+            //TODO
+            //RuleFor(x => x.CreateCharacterFriend.CharacterId)
+            //    .NotEmpty()
+            //    .WithMessage("CharacterId is empty");
+            //RuleFor(x => x.CreateCharacterFriend.FriendId)
+            //    .NotEmpty()
+            //    .WithMessage("FriendId is empty");
         }
     }
 }

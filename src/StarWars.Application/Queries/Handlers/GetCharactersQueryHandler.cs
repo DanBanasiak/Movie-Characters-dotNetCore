@@ -6,6 +6,7 @@ using StarWars.Application.Dtos.Episodes;
 using StarWars.Application.Dtos.Friends;
 using StarWars.Application.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,10 +30,10 @@ namespace StarWars.Application.Queries.Handlers
                 "LEFT JOIN characterEpisodes ec ON ec.CharacterId = c.CharacterId " +
                 "LEFT JOIN episodes e ON e.EpisodeId = ec.EpisodeId " +
                 "LEFT JOIN CharacterFriends ef ON ef.CharacterId = c.CharacterId " +
-                "LEFT JOIN Characters f ON f.CharacterId = ef.FriendId";
-                //"ORDER BY c.CreatedAt " +
-                //"OFFSET @Offset ROWS " +
-                //"FETCH NEXT @PageSize ROWS ONLY";
+                "LEFT JOIN Characters f ON f.CharacterId = ef.FriendId " +
+                "ORDER BY c.CreatedAt " +
+                "OFFSET @Offset ROWS " +
+                "FETCH NEXT @PageSize ROWS ONLY";
 
             var connection = _sqlConnectionFactory.GetOpenConnection();
 
@@ -69,7 +70,28 @@ namespace StarWars.Application.Queries.Handlers
                     request.ProductSpecParams.PageSize
                 }, splitOn: "Name");
 
-            return list.AsList();
+            var grouppedList = list.GroupBy(x => x.CharacterId);
+            var lastResult = new List<GetCharacterDto>();
+            foreach (IGrouping<int, GetCharacterDto> item in grouppedList)
+            {
+                GetCharacterDto characterDto = new GetCharacterDto();
+
+                for (int i = 0; i < item.Count(); i++)
+                {
+                    var tempCharacterDto = item.ElementAt(i);
+                    if (i == 0)
+                    {
+                        characterDto = tempCharacterDto;
+                        continue;
+                    }
+
+                    characterDto.Friends.AddRange(tempCharacterDto.Friends);
+                    characterDto.Episodes.AddRange(tempCharacterDto.Episodes);
+                }
+                lastResult.Add(characterDto);
+            }
+
+            return lastResult.AsList();
         }
     }
 }
