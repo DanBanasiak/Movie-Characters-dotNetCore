@@ -6,6 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using StarWars.Api.Configurations;
 using System.Reflection;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using StarWars.Application.Interfaces;
+using StarWars.Application.Data;
+using StarWars.Application.Queries;
+using StarWars.Application.Data.Repositories;
+using StarWars.Application.Commands.Characters.Create;
 
 namespace StarWars.Api
 {
@@ -22,7 +29,19 @@ namespace StarWars.Api
         {
             var connectionString = Configuration["ConnectionString"];
 
+            services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString));
+            services.AddScoped<ISqlConnectionFactory>(sql => new SqlConnectionFactory(connectionString));
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddMediatR(
+                typeof(GetCharactersQuery).Assembly, 
+                typeof(CreateCharacterCommand).Assembly);
+
+            services.AddScoped<ICharacterRepository, CharacterRepository>();
+            services.AddScoped<IEpisodeRepository, EpisodeRepository>();
+            services.AddScoped<IWeaponRepository, WeaponRepository>();
+            services.AddScoped<ICharacterEpisodeRepository, CharacterEpisodeRepository>();
+            services.AddScoped<ICharacterFriendRepository, CharacterFriendRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddControllers();
             services.AddSwaggerDocumentation();

@@ -14,7 +14,7 @@ namespace StarWars.Api.Helpers
         {
             CreateMap<CreateCharacterEpisodeDto, CharacterEpisode>();
             CreateMap<CreateCharacterFriendDto, CharacterFriend>();
-
+            
             CreateMap<CreateCharacterDto, Character>();
             CreateMap<UpdateCharacterDto, Character>();
 
