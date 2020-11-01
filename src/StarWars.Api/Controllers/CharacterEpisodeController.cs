@@ -19,11 +19,11 @@ namespace StarWars.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] CreateCharacterEpisodeDto item)
         {
-            var characters = await _mediator.Send(new CreateCharacterEpisodeCommand()
+            await _mediator.Send(new CreateCharacterEpisodeCommand()
             {
                 CreateCharacterEpisode = item
             });
-            return Ok(characters);
+            return Ok();
         }
     }
 }

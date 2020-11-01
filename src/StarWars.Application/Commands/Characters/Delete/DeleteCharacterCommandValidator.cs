@@ -6,9 +6,10 @@ namespace StarWars.Application.Commands.Characters.Delete
     {
         public DeleteCharacterCommandValidator()
         {
-            RuleFor(x => x.CharacterId)
-                .NotEmpty()
-                .WithMessage("CharacterId is empty");
+            //TODO
+            //RuleFor(x => x.CharacterId)
+            //    .NotEmpty()
+            //    .WithMessage("CharacterId is empty");
         }
     }
 }

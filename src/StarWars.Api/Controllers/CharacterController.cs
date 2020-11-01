@@ -39,32 +39,32 @@ namespace StarWars.Api.Controllers
 		[HttpPost]
 		public async Task<IActionResult> PostAsync([FromBody] CreateCharacterDto item)
 		{
-			var characters = await _mediator.Send(new CreateCharacterCommand()
+			await _mediator.Send(new CreateCharacterCommand()
 			{
 				CreateCharacter = item
 			});
-			return Ok(characters);
+			return Ok();
 		}
 
 		[HttpPut("{id}")]
 		public async Task<IActionResult> PutAsync(int id, [FromBody] UpdateCharacterDto item)
 		{
-			var characters = await _mediator.Send(new UpdateCharacterCommand()
+			await _mediator.Send(new UpdateCharacterCommand()
 			{
 				CharacterId = id,
 				UpdateCharacter = item
 			});
-			return Ok(characters);
+			return Ok();
 		}
 
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteAsync(int id)
 		{
-			var characters = await _mediator.Send(new DeleteCharacterCommand()
+			await _mediator.Send(new DeleteCharacterCommand()
 			{
 				CharacterId = id
 			});
-			return Ok(characters);
+			return Ok();
 		}
 	}
 }
