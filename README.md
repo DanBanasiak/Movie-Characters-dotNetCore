@@ -1,7 +1,5 @@
 ﻿# Star Wars
 
-Temporary demo:
-
 ## Features
 - CRUD of characters using CQRS
 - Swagger support
