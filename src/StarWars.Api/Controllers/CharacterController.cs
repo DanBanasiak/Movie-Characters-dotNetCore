@@ -11,21 +11,13 @@ using System.Threading.Tasks;
 
 namespace StarWars.Api.Controllers
 {
-	[ApiController]
-	[Route("[controller]")]
-	public class CharacterController : ControllerBase
+	public class CharacterController : BaseController
 	{
-		private readonly IMediator _mediator;
-		public CharacterController(IMediator mediator)
-		{
-			_mediator = mediator;
-		}
-
 		[HttpGet]
 		public async Task<ActionResult<Pagination<GetCharacterDto>>> GetAllAsync(
 			[FromQuery]ProductSpecParams productParams)
 		{
-			var characters = await _mediator.Send(new GetCharactersQuery()
+			var characters = await Mediator.Send(new GetCharactersQuery()
 			{
 				ProductSpecParams = productParams
 			});
@@ -39,7 +31,7 @@ namespace StarWars.Api.Controllers
 		[HttpPost]
 		public async Task<IActionResult> PostAsync([FromBody] CreateCharacterDto item)
 		{
-			await _mediator.Send(new CreateCharacterCommand()
+			await Mediator.Send(new CreateCharacterCommand()
 			{
 				CreateCharacter = item
 			});
@@ -49,7 +41,7 @@ namespace StarWars.Api.Controllers
 		[HttpPut("{id}")]
 		public async Task<IActionResult> PutAsync(int id, [FromBody] UpdateCharacterDto item)
 		{
-			await _mediator.Send(new UpdateCharacterCommand()
+			await Mediator.Send(new UpdateCharacterCommand()
 			{
 				CharacterId = id,
 				UpdateCharacter = item
@@ -60,7 +52,7 @@ namespace StarWars.Api.Controllers
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteAsync(int id)
 		{
-			await _mediator.Send(new DeleteCharacterCommand()
+			await Mediator.Send(new DeleteCharacterCommand()
 			{
 				CharacterId = id
 			});

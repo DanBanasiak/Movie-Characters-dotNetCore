@@ -9,25 +9,19 @@ namespace StarWars.Api.Controllers
 {
 	[ApiController]
 	[Route("[controller]")]
-	public class EpisodeController : ControllerBase
+	public class EpisodeController : BaseController
 	{
-		private readonly IMediator _mediator;
-		public EpisodeController(IMediator mediator)
-		{
-			_mediator = mediator;
-		}
-
 		[HttpGet]
 		public async Task<IActionResult> GetAllAsync()
 		{
-			var items = await _mediator.Send(new GetEpisodesQuery());
+			var items = await Mediator.Send(new GetEpisodesQuery());
 			return Ok(items);
 		}
 
 		[HttpPost]
 		public async Task<IActionResult> PostAsync([FromBody] CreateEpisodeDto item)
 		{
-			await _mediator.Send(new CreateEpisodeCommand()
+			await Mediator.Send(new CreateEpisodeCommand()
 			{
 				CreateEpisode = item
 			});

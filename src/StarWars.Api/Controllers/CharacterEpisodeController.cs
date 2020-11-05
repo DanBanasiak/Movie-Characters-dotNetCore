@@ -6,20 +6,12 @@ using System.Threading.Tasks;
 
 namespace StarWars.Api.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class CharacterEpisodeController : ControllerBase
+    public class CharacterEpisodeController : BaseController
     {
-        private readonly IMediator _mediator;
-        public CharacterEpisodeController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] CreateCharacterEpisodeDto item)
         {
-            await _mediator.Send(new CreateCharacterEpisodeCommand()
+            await Mediator.Send(new CreateCharacterEpisodeCommand()
             {
                 CreateCharacterEpisode = item
             });

@@ -8,18 +8,12 @@ namespace StarWars.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CharacterFriendController : ControllerBase
+    public class CharacterFriendController : BaseController
     {
-        private readonly IMediator _mediator;
-        public CharacterFriendController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] CreateCharacterFriendDto item)
         {
-            await _mediator.Send(new CreateCharacterFriendCommand
+            await Mediator.Send(new CreateCharacterFriendCommand
             {
                 CreateCharacterFriend = item
             });

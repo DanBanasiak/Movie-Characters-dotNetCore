@@ -1,14 +1,15 @@
 ﻿# Star Wars
 
 ## Features
-- CRUD of characters using CQRS
-- Swagger support
-- simple pagination
-- unit tests
+- [x] CRUD of characters using CQRS
+- [x] Swagger support
+- [x] simple pagination
+- [x] unit tests
+- [ ] EF Migration using code-first way
+- [ ] logger
 
 ## Libraries
-- MediatoR
+- MediatR
 - Swagger
-- Dapper
 - EF Core
 - AutoMapper

@@ -39,7 +39,6 @@ namespace StarWars.Persistence
                     new CharacterEpisode { CharacterId = 2, EpisodeId = 3 }
                 };
 
-
                 var characterFriends = new List<CharacterFriend>()
                 {
                     new CharacterFriend { CharacterId = 1, FriendId = 1 },
