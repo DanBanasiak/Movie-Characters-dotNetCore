@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using StarWars.Application.Data;
+using StarWars.Persistence;
 using System;
 
 namespace StarWars.UnitTests.Mocks

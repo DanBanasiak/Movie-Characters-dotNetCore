@@ -46,11 +46,13 @@ SELECT * FROM Episodes;
 SELECT * FROM CharacterEpisodes;
 SELECT * FROM CharacterFriends;
 
-SELECT c.CharacterId, c.CreatedAt, c.Name, e.Name, e.EpisodeId, f.Name from Characters c 
-LEFT JOIN CharacterEpisodes ec ON ec.CharacterId = c.CharacterId
-LEFT JOIN Episodes e ON e.EpisodeId = ec.EpisodeId
+SELECT c.CharacterId, c.CreatedAt, c.Name, c.Strength, c.Defense, c.Intelligence, 
+e.Name as EpisodeName, e.EpisodeId, f.Name as FriendName, f.CharacterId as FriendId
+FROM characters c
+LEFT JOIN characterEpisodes ec ON ec.CharacterId = c.CharacterId
+LEFT JOIN episodes e ON e.EpisodeId = ec.EpisodeId
 LEFT JOIN CharacterFriends ef ON ef.CharacterId = c.CharacterId
 LEFT JOIN Characters f ON f.CharacterId = ef.FriendId
 ORDER BY c.CreatedAt
-OFFSET 0 ROWS
-FETCH NEXT 10 ROWS ONLY;
+OFFSET @Offset ROWS
+FETCH NEXT @PageSize ROWS ONLY;

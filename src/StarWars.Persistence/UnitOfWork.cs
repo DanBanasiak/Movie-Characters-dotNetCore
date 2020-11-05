@@ -1,4 +1,5 @@
-﻿using StarWars.Application.Interfaces;
+﻿using StarWars.Domain.SeedWork;
+using StarWars.Persistence;
 using System.Threading.Tasks;
 
 namespace StarWars.Application.Data

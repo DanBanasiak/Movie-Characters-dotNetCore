@@ -1,12 +1,9 @@
-﻿using Dapper;
+﻿using AutoMapper;
 using MediatR;
-using StarWars.Application.Dtos.CharacterEpisodes;
+using Microsoft.EntityFrameworkCore;
 using StarWars.Application.Dtos.Characters;
-using StarWars.Application.Dtos.Episodes;
-using StarWars.Application.Dtos.Friends;
-using StarWars.Application.Interfaces;
+using StarWars.Persistence;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,84 +11,22 @@ namespace StarWars.Application.Queries.Handlers
 {
     public class GetCharactersQueryHandler : IRequestHandler<GetCharactersQuery, IReadOnlyList<GetCharacterDto>>
     {
-        private readonly ISqlConnectionFactory _sqlConnectionFactory;
+        private readonly DataContext _dataContext;
+        private readonly IMapper _mapper;
 
-        public GetCharactersQueryHandler(ISqlConnectionFactory sqlConnectionFactory)
+        public GetCharactersQueryHandler(
+            DataContext dataContext,
+            IMapper mapper)
         {
-            _sqlConnectionFactory = sqlConnectionFactory;
+            _dataContext = dataContext;
+            _mapper = mapper;
         }
 
         public async Task<IReadOnlyList<GetCharacterDto>> Handle(GetCharactersQuery request, CancellationToken cancellationToken)
         {
-            const string sql =
-                "SELECT c.CharacterId, c.CreatedAt, c.Name, c.Strength, c.Defense, c.Intelligence, " +
-                "e.Name as EpisodeName, e.EpisodeId, f.Name as FriendName, f.CharacterId as FriendId " +
-                "FROM characters c " +
-                "LEFT JOIN characterEpisodes ec ON ec.CharacterId = c.CharacterId " +
-                "LEFT JOIN episodes e ON e.EpisodeId = ec.EpisodeId " +
-                "LEFT JOIN CharacterFriends ef ON ef.CharacterId = c.CharacterId " +
-                "LEFT JOIN Characters f ON f.CharacterId = ef.FriendId " +
-                "ORDER BY c.CreatedAt " +
-                "OFFSET @Offset ROWS " +
-                "FETCH NEXT @PageSize ROWS ONLY";
-
-            var connection = _sqlConnectionFactory.GetOpenConnection();
-
-            var list = await connection.QueryAsync<GetCharacterDto, DynamicFriendEpisodeDto, GetCharacterDto>(
-                sql, (character, dynamicValue) =>
-                {
-                    //todo: Map Name, Defense, etc. from GetCharacterDto, not DynamicFriendEpisodeDto
-                    character.Name = dynamicValue.Name;
-                    character.Intelligence = dynamicValue.Intelligence;
-                    character.Strength = dynamicValue.Strength;
-                    character.Defense = dynamicValue.Defense;
-
-                    if (dynamicValue.EpisodeId > 0)
-                    {
-                        character.Episodes.Add(new GetEpisodeDto()
-                        {
-                            EpisodeId = dynamicValue.EpisodeId,
-                            Name = dynamicValue.EpisodeName
-                        });
-                    }
-
-                    if (dynamicValue.FriendId > 0)
-                    {
-                        character.Friends.Add(new GetFriendDto()
-                        {
-                            CharacterId = dynamicValue.FriendId,
-                            FriendName = dynamicValue.FriendName,
-                        });
-                    }
-                    return character;
-                }, new
-                {
-                    Offset = request.ProductSpecParams.PageIndex,
-                    request.ProductSpecParams.PageSize
-                }, splitOn: "Name");
-
-            var grouppedList = list.GroupBy(x => x.CharacterId);
-            var lastResult = new List<GetCharacterDto>();
-            foreach (IGrouping<int, GetCharacterDto> item in grouppedList)
-            {
-                GetCharacterDto characterDto = new GetCharacterDto();
-
-                for (int i = 0; i < item.Count(); i++)
-                {
-                    var tempCharacterDto = item.ElementAt(i);
-                    if (i == 0)
-                    {
-                        characterDto = tempCharacterDto;
-                        continue;
-                    }
-
-                    characterDto.Friends.AddRange(tempCharacterDto.Friends);
-                    characterDto.Episodes.AddRange(tempCharacterDto.Episodes);
-                }
-                lastResult.Add(characterDto);
-            }
-
-            return lastResult.AsList();
+            var characterList = await _dataContext.Characters.ToListAsync();
+            var getCharacterDtoList = _mapper.Map<IReadOnlyList<GetCharacterDto>>(characterList);
+            return getCharacterDtoList;
         }
     }
 }

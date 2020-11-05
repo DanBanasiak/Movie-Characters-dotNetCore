@@ -13,6 +13,8 @@ using StarWars.Application.Data;
 using StarWars.Application.Queries;
 using StarWars.Application.Data.Repositories;
 using StarWars.Application.Commands.Characters.Create;
+using StarWars.Domain.SeedWork;
+using StarWars.Persistence;
 
 namespace StarWars.Api
 {
@@ -30,7 +32,6 @@ namespace StarWars.Api
             var connectionString = Configuration["ConnectionStrings:DefaultConnection"];
 
             services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString));
-            services.AddScoped<ISqlConnectionFactory>(sql => new SqlConnectionFactory(connectionString));
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddMediatR(
                 typeof(GetCharactersQuery).Assembly, 

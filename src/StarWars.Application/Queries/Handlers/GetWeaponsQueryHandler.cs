@@ -1,7 +1,8 @@
-﻿using Dapper;
+﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using StarWars.Application.Dtos.Weapons;
-using StarWars.Application.Interfaces;
+using StarWars.Persistence;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,20 +11,22 @@ namespace StarWars.Application.Queries.Handlers
 {
     public class GetWeaponsQueryHandler : IRequestHandler<GetWeaponsQuery, IReadOnlyList<GetWeaponsDto>>
     {
-        private readonly ISqlConnectionFactory _sqlConnectionFactory;
-
-        public GetWeaponsQueryHandler(ISqlConnectionFactory sqlConnectionFactory)
+        private readonly DataContext _dataContext;
+        private readonly IMapper _mapper;
+        public GetWeaponsQueryHandler(
+            DataContext dataContext,
+            IMapper mapper)
         {
-            _sqlConnectionFactory = sqlConnectionFactory;
+            _dataContext = dataContext;
+            _mapper = mapper;
         }
 
         public async Task<IReadOnlyList<GetWeaponsDto>> Handle(GetWeaponsQuery request, CancellationToken cancellationToken)
         {
-            const string sql = "SELECT * FROM Weapons";
-            var connection = _sqlConnectionFactory.GetOpenConnection();
-            var list = await connection.QueryAsync<GetWeaponsDto>(sql);
+            var weaponList = await _dataContext.Weapons.ToListAsync();
+            var getWeaponDtoList = _mapper.Map<IReadOnlyList<GetWeaponsDto>>(weaponList);
 
-            return list.AsList();
+            return getWeaponDtoList;
         }
 
     }

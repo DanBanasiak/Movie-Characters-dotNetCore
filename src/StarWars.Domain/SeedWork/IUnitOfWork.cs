@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace StarWars.Application.Interfaces
+namespace StarWars.Domain.SeedWork
 {
     public interface IUnitOfWork
     {

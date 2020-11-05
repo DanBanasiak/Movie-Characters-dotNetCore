@@ -3,8 +3,9 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using StarWars.Application.Exceptions;
 using StarWars.Application.Interfaces;
 using StarWars.Domain.Entities;
+using StarWars.Domain.SeedWork;
+using StarWars.Persistence;
 using System;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace StarWars.Application.Data.Repositories

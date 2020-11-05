@@ -1,5 +1,7 @@
 ﻿using StarWars.Application.Interfaces;
 using StarWars.Domain.Entities;
+using StarWars.Domain.SeedWork;
+using StarWars.Persistence;
 using System;
 using System.Threading.Tasks;
 
