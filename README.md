@@ -13,3 +13,6 @@
 - Swagger
 - EF Core
 - AutoMapper
+
+## Commands
+```dotnet ef migrations add InitialCreate -p .\StarWars.Persistence\ -s .\StarWars.Api\```
